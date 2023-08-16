@@ -338,25 +338,45 @@ function spinner () {
                     form.reset();
                 }
 
-                const formData = new FormData(form);
-            //    const data = JSON.stringify(Object.fromEntries(formData.entries()))
+                const empty = /^$/g;
+                const phone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+			    let status = false;
 
+                for (let i = 0; i < form.querySelectorAll("input").length; i++) {
+                    if (empty.test(form[i].value) || !phone.test(form[1].value)) {
+                        status = false;
+                        messagesModal("Please fill all fields, and on phone field please fill mobile number format");
+                        loader.remove();
+                        form.reset();
+                        break;
+                    } else {
+                        status = true;
+                    }
+                }
 
-                // postData("http://localhost:8888/requests", data)
-                
-                axios.post("http://localhost:8888/requests", Object.fromEntries(formData))
-                .then(res => {
-                    console.log(res);
-                    messagesModal(success);
-                })
-                .catch(err => {
-                     messagesModal(failure + ":" + err);
-                })
-                .finally(()=>{
-                    loader.remove();
-                    form.reset();
-                });
-            })   
+                if (status) {
+                    const formData = new FormData(form);
+                    //    const data = JSON.stringify(Object.fromEntries(formData.entries()))
+                    // postData("http://localhost:8888/requests", data)
+                        
+                        axios.post("http://localhost:8888/requests", Object.fromEntries(formData))
+                        .then(res => {
+                            console.log(res);
+                            messagesModal(success);
+                        })
+                        .catch(err => {
+                             messagesModal(failure + ":" + err);
+                        })
+                        .finally(()=>{
+                            loader.remove();
+                            form.reset();
+                        });
+                } else {
+                    console.log("status is false");
+                }
+
+               
+            });   
         }
 
         function messagesModal (message) {
@@ -434,12 +454,12 @@ function spinner () {
         //     showSlides(slideIndex += n)
         // }
 
+
+
+        
+
         //slider 2
-
-       
-
         checkForZero();
-
         slidesField.style.cssText =`
         display:flex;
         width:${100 * slides.length}%;
@@ -495,7 +515,7 @@ function spinner () {
         }
 
         next.addEventListener("click", () => {
-           sliderLogic(parseFloat(width.slice(0,width.length - 2)) *(slides.length -1), true, false);
+           sliderLogic(+width.replace(/\D/g, "") *(slides.length -1), true, false);
            checkForZero();
            dotsLogic();
         });
@@ -511,7 +531,7 @@ function spinner () {
             dot.addEventListener("click", (e) => {
                 const slideTo = e.target.getAttribute("data-slide-to");
                 slideIndex = slideTo;
-                offset = parseFloat(width.slice(0,width.length - 2)) *(slideTo - 1);
+                offset = +width.replace(/\D/g, "") *(slideTo - 1);
 
                 slidesField.style.transform = `translateX(-${offset}px)`;
 
@@ -539,12 +559,12 @@ function spinner () {
         function sliderLogic (statment, next = false, prev = false){
             if (next === true && prev === false ){
                 slideIndex === slides.length || slideIndex >= slides.length ? slideIndex = 1 : slideIndex++;
-                offset === statment ? offset = 0 : offset += parseFloat(width.slice(0,width.length - 2));
+                offset === statment ? offset = 0 : offset += +width.replace(/\D/g, "");
             }
 
             if (next === false && prev === true){
                 slideIndex === 1 || slideIndex <= 1 ? slideIndex = slides.length : slideIndex--;
-                offset === statment ? offset = parseFloat(width.slice(0,width.length - 2)) *(slides.length -1) : offset -= parseFloat(width.slice(0,width.length - 2));
+                offset === statment ? offset = +width.replace(/\D/g, "") *(slides.length -1) : offset -= +width.replace(/\D/g, "");
             }
             slidesField.style.transform = `translateX(-${offset}px)`; 
         }
