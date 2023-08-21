@@ -120,4 +120,5 @@ function calculatorModule() {
     getDynamicInformation("#weight");
     getDynamicInformation("#age");
 }
-module.exports = calculatorModule;
+// module.exports = calculatorModule;
+export default calculatorModule;

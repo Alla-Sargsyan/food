@@ -51,4 +51,5 @@ function modalModule() {
     window.addEventListener("scroll", showModalByScroll);
 }
 
-module.exports = modalModule;
+// module.exports = modalModule;
+export default modalModule;
